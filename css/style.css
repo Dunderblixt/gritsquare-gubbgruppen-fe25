@@ -1,3 +1,4 @@
+/* Message */
 .message {
   padding: 12px 16px;
   border-radius: 14px;
@@ -22,6 +23,7 @@
 }
 
 
+/* Delete zone */
 #deleteZone {
   margin-top: 20px;
   padding: 18px;
@@ -33,11 +35,35 @@
   transition: all 0.25s ease;
 }
 
-/* När du drar över */
+/* Hover delete */
 #deleteZone.hover {
   background: rgba(255, 0, 0, 0.2);
   border-color: red;
   color: white;
   transform: scale(1.05);
   box-shadow: 0 0 20px rgba(255, 0, 0, 0.4);
+}
+
+
+/* DARK MODE */
+body.dark-mode {
+  background-color: #121212;
+  color: #e0e0e0;
+}
+
+/* Message i dark mode */
+body.dark-mode .message {
+  background: rgba(255, 255, 255, 0.05);
+  color: #e0e0e0;
+}
+
+/* Delete zone i dark mode */
+body.dark-mode #deleteZone {
+  border-color: rgba(255, 0, 0, 0.6);
+  color: rgba(255, 100, 100, 0.9);
+}
+
+body.dark-mode #deleteZone.hover {
+  background: rgba(255, 0, 0, 0.3);
+  color: white;
 }
