@@ -57,9 +57,10 @@ const messageInput = document.getElementById("messageInput");
 
 postBtn.addEventListener("click", async () => {
   const userObj = {
+    owner: auth.currentUser ? auth.currentUser.uid : "anonymous",
     name: usernameInput.value.trim(),
     message: messageInput.value.trim()
-  };
+  }; 
 
   if (!userObj.name || !userObj.message) {
     alert("Please enter both username and message!");
