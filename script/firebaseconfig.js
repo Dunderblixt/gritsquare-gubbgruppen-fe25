@@ -170,25 +170,22 @@ postBtn.addEventListener("click", async (e) => {
 // Logga in med google genom firebase / Henrik
 
 
+const loginBtn = document.getElementById("loginBtn");
+
 onAuthStateChanged(auth, (user) => {
   if (user) {
-    const uid = user.uid;
-    console.log("User is signed in with UID:", uid);
+    loginBtn.textContent = `Signed in as ${user.displayName || user.email}`;
+    loginBtn.disabled = true;
   } else {
-    console.log("No user is signed in");
+    loginBtn.textContent = "Sign in with Google";
+    loginBtn.disabled = false;
   }
 });
 
-signInWithPopup(auth, new GoogleAuthProvider());
-
-
-// Event listener för login-knappen, den finns inte ännu i HTML
-const loginBtn = document.getElementById("loginBtn");
 loginBtn.addEventListener("click", () => {
   signInWithPopup(auth, new GoogleAuthProvider())
     .then((result) => {
-      const user = result.user;
-      console.log("User signed in:", user);
+      console.log("User signed in:", result.user);
     })
     .catch((error) => {
       console.error("Error signing in:", error);
