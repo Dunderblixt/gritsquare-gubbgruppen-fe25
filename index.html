@@ -10,6 +10,7 @@
   <script src="script/main.js" type="module" defer></script>
   <script src="script/theme.js" defer></script>
   <script src="script/termsConditions.js" defer></script>
+    <script src="script/search.js" type="module" defer></script>
   <!-- google fonts -->
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -75,8 +76,14 @@
           <!-- <svg class="bi me-2" width="40" height="32"><use xlink:href="#bootstrap"></use></svg> -->
           <span class="fs-2 bitcount-prop-double burnt-peach">Gubb Chat</span>
         </a>
-
+  
         <ul class="nav nav-pills align-items-center">
+           <li>
+          <form id="searchForm">
+          <input type="text" name="search" id="searchBar" placeholder="Search"/>
+          <button type="submit">Search</button>
+        </form>
+        </li>
           <li class="nav-item"><a href="index.html" class="nav-link active" aria-current="page">Home</a></li>
           <li class="nav-item"><a href="contact.html" class="nav-link">Contact us</a></li>
           <li class="nav-item"><a href="about.html" class="nav-link">About</a></li>
@@ -90,9 +97,12 @@
       </header>
     </div>
   </div>
+
+
+
   <div class="container">
      <h1 class="white">💬 Gubb Chat</h1>
-
+     <div id="searchResults"></div>
     <form id="chatForm" class="row g-2 align-items-center mb-3">
       <div class="col-12 col-md-3" id="usernameCol">
         <label for="usernameInput" class="form-label visually-hidden">Your name</label>
