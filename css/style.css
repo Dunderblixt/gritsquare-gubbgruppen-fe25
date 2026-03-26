@@ -65,6 +65,62 @@ body {
   align-items: flex-start;
 }
 
+.message-actions {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+}
+
+.message-edited {
+  margin-left: 6px;
+  font-size: 0.75rem;
+  color: rgba(0, 0, 0, 0.5);
+}
+
+.edit-btn {
+  border: 1px solid rgba(255, 255, 255, 0.3);
+  background: transparent;
+  color: #8d98a1;
+  border-radius: 999px;
+  width: 32px;
+  height: 32px;
+  line-height: 1;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  flex-shrink: 0;
+}
+
+.edit-btn:hover {
+  color: var(--accent);
+  border-color: var(--accent);
+  transform: scale(1.05);
+}
+
+.edit-form {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px;
+  margin-top: 4px;
+}
+
+.edit-input {
+  flex: 1 1 220px;
+  min-width: 180px;
+  border: 1px solid rgba(255, 255, 255, 0.35);
+  background: rgba(255, 255, 255, 0.08);
+  color: #000000;
+  border-radius: 8px;
+  padding: 4px 10px;
+}
+
+.edit-input:focus {
+  outline: none;
+  box-shadow: 0 0 0 2px rgba(var(--btn-focus-rgb), 0.4);
+}
+
 .verified-badge {
   display: inline-flex;
   align-items: center;
@@ -245,6 +301,7 @@ body {
     background: rgba(0, 0, 0, 0.08) !important;
     box-shadow: none !important;
 }
+
 
 .reply .message-time {
     font-size: 0.75rem;

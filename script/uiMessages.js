@@ -1,6 +1,7 @@
 import { renderReplies } from "./main.js";
 import { sendReply } from "./sendReply.js";
-import { getAllReplies } from "./userApi.js";
+import { updateUser } from "./userApi.js";
+import { censorBadWords } from "./censor.js";
 
 const REACTIONS = ["👍", "❤️", "😂"];
 const REACTION_STORAGE_KEY = "messageReactions";
@@ -214,6 +215,9 @@ export function displayAllUsers(
         });
 
         div.addEventListener("submit", (e) => {
+            if (e.target && e.target.classList && e.target.classList.contains("edit-form")) {
+                return;
+            }
             e.preventDefault();
             const data = new FormData(e.target);
             const reply = data.get("reply-message");
@@ -231,14 +235,21 @@ export function displayAllUsers(
             user.owner && user.owner !== "anonymous"
                 ? `<i class="verified-badge bi bi-patch-check-fill" title="Signed in user" aria-label="Signed in user"></i>`
                 : "";
+        const isOwnMessage = window.currentUserId && user.owner === window.currentUserId;
+        const editedLabel = user.editedAt
+            ? `<small class="message-edited" aria-label="edited">(edited)</small>`
+            : "";
 
         div.innerHTML = `
             <div class="message-content">
                 <div class="message-head">
-            <div><strong>${displayName}</strong>${verifiedBadge}: <span style="color: ${user.color || "#000"}">${user.message || "Inget meddelande"}</span></div>
-                <button class="favorite-btn ${isFavorite ? "is-favorite" : ""}" type="button" aria-label="Favoritmarkera meddelande">
-                    ${isFavorite ? "★" : "☆"}
-                </button>
+            <div class="message-title"><strong>${displayName}</strong>${verifiedBadge}: <span class="message-text" style="color: ${user.color || "#000"}">${user.message || "Inget meddelande"}</span>${editedLabel}</div>
+                <div class="message-actions">
+                    <button class="favorite-btn ${isFavorite ? "is-favorite" : ""}" type="button" aria-label="Favoritmarkera meddelande">
+                        ${isFavorite ? "★" : "☆"}
+                    </button>
+                    ${isOwnMessage ? `<button class="edit-btn" type="button" aria-label="Edit message"><i class="bi bi-pencil"></i></button>` : ""}
+                </div>
                 </div>
                 <div class="message-time-div rounded">
                 <small class="message-time">${timeText}</small>
@@ -280,6 +291,83 @@ export function displayAllUsers(
                     replySection.hidden = !replySection.hidden;
                     replyToggleBtn.classList.toggle("is-open", !replySection.hidden);
                 }
+            });
+        }
+        const messageTitle = div.querySelector(".message-title");
+        const editBtn = div.querySelector(".edit-btn");
+        if (editBtn && messageTitle) {
+            editBtn.addEventListener("click", (e) => {
+                e.stopPropagation();
+                if (div.classList.contains("is-editing")) return;
+                div.classList.add("is-editing");
+                div.setAttribute("draggable", "false");
+
+                const currentText = messageTitle.querySelector(".message-text")?.textContent || "";
+                const editForm = document.createElement("form");
+                editForm.className = "edit-form";
+                editForm.innerHTML = `
+                    <input class="edit-input" type="text" value="${currentText.replace(/\"/g, "&quot;")}" />
+                    <div class="edit-actions">
+                        <button type="submit" class="btn btn-burnt-peach btn-sm">Save</button>
+                        <button type="button" class="btn btn-outline-secondary btn-sm edit-cancel">Cancel</button>
+                    </div>
+                `;
+
+                const textSpan = messageTitle.querySelector(".message-text");
+                if (textSpan) textSpan.replaceWith(editForm);
+
+                const input = editForm.querySelector(".edit-input");
+                if (input) {
+                    input.focus();
+                    input.setSelectionRange(input.value.length, input.value.length);
+                }
+
+                const cancelBtn = editForm.querySelector(".edit-cancel");
+                if (cancelBtn) {
+                    cancelBtn.addEventListener("click", () => {
+                        const restored = document.createElement("span");
+                        restored.className = "message-text";
+                        restored.style.color = user.color || "#000";
+                        restored.textContent = currentText || "Inget meddelande";
+                        editForm.replaceWith(restored);
+                        div.classList.remove("is-editing");
+                        div.setAttribute("draggable", "true");
+                    });
+                }
+
+                editForm.addEventListener("submit", async (event) => {
+                    event.preventDefault();
+                    const nextRaw = input ? input.value.trim() : "";
+                    if (!nextRaw) {
+                        alert("Message cannot be empty");
+                        return;
+                    }
+                    const nextValue = censorBadWords(nextRaw);
+                    const ok = await updateUser(key, {
+                        message: nextValue,
+                        editedAt: Date.now(),
+                    });
+                    if (!ok) {
+                        alert("Failed to update message");
+                        return;
+                    }
+
+                    const updated = document.createElement("span");
+                    updated.className = "message-text";
+                    updated.style.color = user.color || "#000";
+                    updated.textContent = nextValue;
+                    editForm.replaceWith(updated);
+
+                    let edited = messageTitle.querySelector(".message-edited");
+                    if (!edited) {
+                        edited = document.createElement("small");
+                        edited.className = "message-edited";
+                        edited.textContent = "(edited)";
+                        messageTitle.append(" ", edited);
+                    }
+                    div.classList.remove("is-editing");
+                    div.setAttribute("draggable", "true");
+                });
             });
         }
         const reactionButtons = div.querySelectorAll(".reaction-btn");
@@ -336,4 +424,5 @@ export function displayAllUsers(
         renderReplies(replies, key, replyDiv);
     });
 }
+
 
