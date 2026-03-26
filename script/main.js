@@ -1,4 +1,4 @@
-import { getAllUsers, deleteUser } from "./userApi.js";
+import { getAllUsers, deleteUser, getAllReplies } from "./userApi.js";
 import { displayAllUsers, sortUsersByCreatedAt, sortUsersByName, sortUsersByFavorites } from "./uiMessages.js";
 import { setupDragAndDelete } from "./dragdelete.js";
 import { setupDragAndFavorite } from "./dragfavorite.js";
@@ -22,6 +22,8 @@ const favoriteZone = document.getElementById("favoriteZone");
 let currentUsers = null;
 let currentFavorites = new Set();
 let currentSortMode = "time";
+let replies = await getAllReplies();
+
 
 function getSortFunction() {
   if (currentSortMode === "name") return sortUsersByName;
@@ -53,8 +55,46 @@ function renderUsers(nextUsers = currentUsers) {
       currentFavorites = await getFavoritesForCurrentUser(window.currentUserId);
       renderUsers();
     },
+    replies: replies,
   });
 }
+
+export const renderReplies = async (replies, parent_id, repliesDiv) => {
+
+    for (const key in replies) {
+        if (!Object.hasOwn(replies, key)) return;
+
+        const element = replies[key];
+        console.log(element);
+        // console.log(element.parent_id)
+        if (element.parent_id === parent_id) {
+            console.log(`${element.message} is a reply to ${parent_id}`);
+            const replyDiv = document.createElement("div");
+
+            replyDiv.classList.add(
+                "message",
+                "reply",
+                "list-group-item",
+                "list-group-item-action",
+                "bg-white",
+                "text-dark",
+                "border-secondary",
+                "rounded-3",
+                "mb-2",
+            );
+
+            replyDiv.innerHTML = `
+            <p>${element.message}</p>
+                </div>
+                <div class="message-time-div rounded">
+                <small class="message-time">${new Date(element.createdAt).toLocaleString("sv-SE")}</small>
+                </div>
+            `;
+
+            repliesDiv.appendChild(replyDiv);
+        }
+    }
+};
 
 async function refreshUsersAndRender() {
   currentUsers = await getAllUsers();
