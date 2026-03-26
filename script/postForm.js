@@ -5,11 +5,6 @@ export function setupPostForm({ displayAllUsers }) {
   const postBtn = document.getElementById("postBtn");
   const usernameInput = document.getElementById("usernameInput");
   const messageInput = document.getElementById("messageInput");
-  const colorPicker = document.getElementById("textColorPicker");
-
-   colorPicker.addEventListener("input", () => {
-    messageInput.style.color = colorPicker.value;
-  });
 
   postBtn.addEventListener("click", async (e) => {
     e.preventDefault();
@@ -21,7 +16,6 @@ export function setupPostForm({ displayAllUsers }) {
       owner: window.currentUserId || "anonymous",
       name: censoredName,
       message: censoredMessage,
-      color: document.getElementById("textColorPicker").value,
       createdAt: Date.now(),
     };
 
@@ -40,8 +34,6 @@ export function setupPostForm({ displayAllUsers }) {
         usernameInput.value = "";
       }
       messageInput.value = "";
-       messageInput.style.color = "#000000";
-       colorPicker.value = "#000000";
     } else {
       alert("Failed to post message, please try again");
     }
