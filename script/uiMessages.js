@@ -66,6 +66,8 @@ export function displayAllUsers(
 
     const favoritesSet = options.favoritesSet || new Set();
     const onFavoriteToggle = options.onFavoriteToggle;
+    const replies = options.replies || {};
+    
 
     sortFunction(users).forEach(([key, user]) => {
         if (!user) return;
@@ -150,8 +152,10 @@ export function displayAllUsers(
                         <button  type="submit">Send Reply!</button>
                     </form>
                 </section>
-            </div>
+            </div>            
             `;
+
+            const replyDiv = document.createElement("div");
         const likeBtn = div.querySelector(".like-btn");
         let likes = 0;
 
@@ -184,15 +188,9 @@ export function displayAllUsers(
         });
         div.addEventListener("dragend", () => div.classList.remove("dragging"));
 
+        messagesList.append(div, replyDiv);
 
-
-        messagesList.appendChild(div);
-
-        const render = async() => {
-            await renderReplies(key, messagesList);
-
-        }
-        render();
-
+            console.log(replies)
+            renderReplies(replies, key, replyDiv);
     });
 }

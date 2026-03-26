@@ -1,6 +1,7 @@
-import { postReply } from "./userApi.js";
-
+import { getAllReplies, postReply } from "./userApi.js";
 import { censorBadWords } from "./censor.js";
+import { displayAllUsers } from "./uiMessages.js";
+import { getAllUsers } from "./userApi.js";
 
 export const sendReply = async (messageKey, text = "") => {
 
@@ -24,7 +25,13 @@ export const sendReply = async (messageKey, text = "") => {
     };
 
     try {
-        await postReply(replyData)
+        const response = await postReply(replyData)
+        if(response){
+                  const users = await getAllUsers();
+                  const replies = await getAllReplies();
+                  displayAllUsers(users, undefined, {replies});
+
+        }
     } catch (error) {
         console.error("Kunde inte skicka svaret:", error);
         alert("Fel vid skickning av svaret. Försök igen.");

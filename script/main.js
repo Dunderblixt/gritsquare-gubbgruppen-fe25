@@ -26,6 +26,7 @@ const favoriteZone = document.getElementById("favoriteZone");
 let currentUsers = null;
 let currentFavorites = new Set();
 let currentSortMode = "time";
+let replies = await getAllReplies();
 
 function getSortFunction() {
     if (currentSortMode === "name") return sortUsersByName;
@@ -44,6 +45,7 @@ function syncFavoriteZoneLabel() {
 }
 
 function renderUsers(nextUsers = currentUsers) {
+    
     currentUsers = nextUsers;
     displayAllUsers(currentUsers, getSortFunction(), {
         favoritesSet: currentFavorites,
@@ -62,11 +64,12 @@ function renderUsers(nextUsers = currentUsers) {
             );
             renderUsers();
         },
+        replies: replies,
     });
 }
-const replies = await getAllReplies();
 
-export const renderReplies = async (parent_id, messagesList) => {
+export const renderReplies = async (replies, parent_id, repliesDiv) => {
+
     for (const key in replies) {
         if (!Object.hasOwn(replies, key)) return;
 
@@ -97,13 +100,14 @@ export const renderReplies = async (parent_id, messagesList) => {
                 </div>
             `;
 
-            messagesList.appendChild(replyDiv);
+            repliesDiv.appendChild(replyDiv);
         }
     }
 };
 
 async function refreshUsersAndRender() {
     currentUsers = await getAllUsers();
+
     renderUsers();
 }
 
