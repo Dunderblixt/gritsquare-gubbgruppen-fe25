@@ -150,7 +150,9 @@ export function displayAllUsers(
                 <small class="message-time">${timeText}</small>
                 </div>
                 <button class="like-btn">❤️ 0</button>
-                <section hidden class="reply-section mt-2">
+            </div>
+            <div class="replies-container"></div>
+            <section hidden class="reply-section mt-2">
                     ${window.currentUserId
                         ? `<form class="flex"> 
                         <input name="reply-message" type="text"/>
@@ -159,8 +161,6 @@ export function displayAllUsers(
                         : `<p class="text-muted small">You must be signed in to reply.</p>`
                     }
                 </section>
-            </div>
-            <div class="replies-container"></div>
             `;
 
         const replyDiv = div.querySelector(".replies-container");
