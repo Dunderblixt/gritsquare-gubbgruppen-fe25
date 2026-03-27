@@ -8,7 +8,7 @@ Målet har varit att bygga en fungerande frontend med login och meddelanden.
 **Henrik** – Project Manager, Firebase setup, login  
 **Mohammad** – JavaScript, profanity filter,sound, delete  
 **Zarak** – HTML struktur, Terms & Services  
-**Adam** – CSS, dark/light mode  
+**Adam** – CSS, dark/light mode, Message editing
 **Bella** – sortering av meddelanden 
 
 ## Funktioner
