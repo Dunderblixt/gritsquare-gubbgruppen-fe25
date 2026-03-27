@@ -1,5 +1,6 @@
 const baseUrlUsers = "https://flaskpost-8adcc-default-rtdb.europe-west1.firebasedatabase.app/users";
 const favoritesBaseUrl = "https://flaskpost-8adcc-default-rtdb.europe-west1.firebasedatabase.app/favorites";
+const reactionsBaseUrl = "https://flaskpost-8adcc-default-rtdb.europe-west1.firebasedatabase.app/reactions";
 const baseUrl = "https://flaskpost-8adcc-default-rtdb.europe-west1.firebasedatabase.app/";
 
 export async function getAllUsers() {
@@ -129,6 +130,34 @@ export async function removeFavoriteByUserId(userId, messageKey) {
     return true;
   } catch (error) {
     console.error("Error removing favorite:", error);
+    return false;
+  }
+}
+
+export async function getAllReactions() {
+  const url = reactionsBaseUrl + ".json";
+  try {
+    const res = await fetch(url);
+    if (!res.ok) throw new Error(`Failed to fetch reactions: ${res.status}`);
+    return (await res.json()) || {};
+  } catch (error) {
+    console.error("Error fetching reactions:", error);
+    return {};
+  }
+}
+
+export async function updateReaction(messageKey, emoji, count) {
+  const url = `${reactionsBaseUrl}/${encodeURIComponent(messageKey)}.json`;
+  try {
+    const res = await fetch(url, {
+      method: "PATCH",
+      body: JSON.stringify({ [emoji]: count }),
+      headers: { "Content-Type": "application/json" },
+    });
+    if (!res.ok) throw new Error(`Failed to update reaction: ${res.status}`);
+    return true;
+  } catch (error) {
+    console.error("Error updating reaction:", error);
     return false;
   }
 }

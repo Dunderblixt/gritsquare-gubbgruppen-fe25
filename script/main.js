@@ -1,4 +1,4 @@
-import { getAllUsers, deleteUser, getAllReplies } from "./userApi.js";
+import { getAllUsers, deleteUser, getAllReplies, getAllReactions } from "./userApi.js";
 import { displayAllUsers, sortUsersByCreatedAt, sortUsersByName, sortUsersByFavorites } from "./uiMessages.js";
 import { setupDragAndDelete } from "./dragdelete.js";
 import { setupPostForm } from "./postForm.js";
@@ -19,6 +19,7 @@ const sortFavoritesBtn = document.getElementById("sortFavoritesBtn");
 
 let currentUsers = null;
 let currentFavorites = new Set();
+let currentReactions = {};
 let currentSortMode = "time";
 let replies = await getAllReplies();
 
@@ -34,6 +35,7 @@ function renderUsers(nextUsers = currentUsers) {
   currentUsers = nextUsers;
   displayAllUsers(currentUsers, getSortFunction(), {
     favoritesSet: currentFavorites,
+    reactionStore: currentReactions,
     onFavoriteToggle: async (messageKey) => {
       const success = await toggleFavoriteForCurrentUser(messageKey, window.currentUserId);
       if (!success) {
@@ -95,13 +97,15 @@ async function refreshFavoritesAndRender() {
 }
 
 async function refreshAppState() {
-  const [users, favorites] = await Promise.all([
+  const [users, favorites, reactions] = await Promise.all([
     getAllUsers(),
     getFavoritesForCurrentUser(window.currentUserId),
+    getAllReactions(),
   ]);
 
   currentUsers = users;
   currentFavorites = favorites;
+  currentReactions = reactions || {};
   renderUsers();
 }
 

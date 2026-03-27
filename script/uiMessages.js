@@ -1,6 +1,6 @@
 import { renderReplies } from "./main.js";
 import { sendReply } from "./sendReply.js";
-import { updateUser } from "./userApi.js";
+import { updateUser, updateReaction } from "./userApi.js";
 import { censorBadWords } from "./censor.js";
 
 const REACTIONS = ["👍", "❤️", "😂"];
@@ -162,7 +162,9 @@ export function displayAllUsers(
     if (!messagesList) return;
     messagesList.innerHTML = "";
 
-    const reactionStore = loadReactionStore();
+    const reactionStore = options.reactionStore && typeof options.reactionStore === "object"
+        ? options.reactionStore
+        : loadReactionStore();
     const userReactionStore = loadUserReactionStore();
     const clientId = getClientId();
     const favoritesSet = options.favoritesSet || new Set();
@@ -396,6 +398,7 @@ export function displayAllUsers(
                 if (!isActive && nextValue > 0 && nextValue % 10 === 0) {
                     showFirework();
                 }
+                updateReaction(key, reaction, nextValue);
             });
         });
 
