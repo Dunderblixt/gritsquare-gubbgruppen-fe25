@@ -11,15 +11,18 @@ Målet har varit att bygga en fungerande frontend med login och meddelanden.
 **Adam** – CSS, dark/light mode, Message editing
 **Bella** – sortering av meddelanden 
 
-## Funktioner
+## Implementerade Funktioner
 - Skicka/reply meddelanden  
 - Radera meddelanden
 - Profanity filter  
 - Google login  
 - Timestamps (hover)  
-- Sortering efter användare/tid/favoriter  
+- Sortering efter användare/tid
 - Dark/light mode  
-- Ljud vid nya meddelanden  
+- Emojis
+- Texthantering
+- Like-funktion
+- animations on likes
 - Drag & delete  
 
 ## Teknik
